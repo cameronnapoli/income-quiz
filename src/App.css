@@ -1,0 +1,14 @@
+.app {
+  width:600px;
+  height:300px;
+  border: 1px solid #ededed;
+  border-radius: 10px;
+  padding: 20px;
+  font-family: sans-serif;
+}
+.questionTitle {
+
+}
+.transitionButton {
+  font-family: sans-serif;
+}
