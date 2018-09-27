@@ -6,6 +6,12 @@ import QuestionTitle from './resources/QuestionTitle';
 
 import './App.css';
 
+const FRONT_PAGE = 0;
+const Q1_PAGE = 1;
+const Q2_PAGE = 2;
+const FINAL_PAGE = 3;
+const Q4_PAGE = 4;
+
 
 function TransitionComponent(props) {
   // Points to the next page
@@ -22,13 +28,13 @@ TransitionComponent.propTypes = {
 };
 
 
-function Page0(props) {
+function StartPage(props) {
   return (
     <div>
       <QuestionTitle title="See how much money you've made today?" />
 
-      <TransitionComponent content="Yes" toNum={1} onChange={props.onChange} />
-      <TransitionComponent content="No" toNum={4} onChange={props.onChange} />
+      <TransitionComponent content="Yes" toNum={Q1_PAGE} onChange={props.onChange} />
+      <TransitionComponent content="No" toNum={Q4_PAGE} onChange={props.onChange} />
     </div>
   );
 }
@@ -42,8 +48,8 @@ function Page1(props) {
         (e) => props.stateFunction({dollarsPerHour: parseInt(e.target.value, 10)})
       } />
 
-      <TransitionComponent content="CHECK" toNum={2} onChange={props.onChange} />
-      <TransitionComponent content="BACK" toNum={0} onChange={props.onChange} />
+      <TransitionComponent content="CHECK" toNum={Q2_PAGE} onChange={props.onChange} />
+      <TransitionComponent content="BACK" toNum={FRONT_PAGE} onChange={props.onChange} />
     </div>
   );
 }
@@ -55,8 +61,8 @@ function Page2(props) {
 
       <TimePicker stateFunction={props.stateFunction} />
 
-      <TransitionComponent content="CHECK" toNum={3} onChange={props.onChange} />
-      <TransitionComponent content="BACK" toNum={1} onChange={props.onChange} />
+      <TransitionComponent content="CHECK" toNum={FINAL_PAGE} onChange={props.onChange} />
+      <TransitionComponent content="BACK" toNum={Q1_PAGE} onChange={props.onChange} />
     </div>
   );
 }
@@ -69,7 +75,6 @@ class CurrencyDisplay extends Component {
     );
   }
 }
-
 
 class FinalPage extends Component {
   constructor(props) {
@@ -89,22 +94,16 @@ class FinalPage extends Component {
   }
 
   tick() {
-    console.log("tick");
     this.updateAmountMade();
   }
 
   componentDidMount() {
     this.updateAmountMade();
-    this.timerID = setInterval(() => this.tick(), 1000);
+    this.timerID = setInterval(() => this.tick(), 100);
   }
 
   componentWillUnmount() {
     clearInterval(this.timerID);
-  }
-
-
-  roundTo4Decimals(num) {
-    return num.toFixed(4);
   }
 
   calculateAmountMade(startDate, endDate, dollarsPerHour) {
@@ -125,19 +124,17 @@ class FinalPage extends Component {
       throw new Error("startDate: " + startDate + ", and endDate: "
         + endDate + " need to be on the same day");
     }
-    return this.roundTo4Decimals((diffMillis / (1000*3600)) * dollarsPerHour);
+    return ((diffMillis / (1000*3600)) * dollarsPerHour).toFixed(4);
   }
 
   render() {
     return (
       <div>
         <QuestionTitle title="You've made:" />
-
         <CurrencyDisplay amount={this.state.amountMade}/>
-
         <TransitionComponent
           content="Restart"
-          toNum={0}
+          toNum={FRONT_PAGE}
           onChange={this.props.onChange}
         />
       </div>
@@ -148,12 +145,21 @@ class FinalPage extends Component {
 function Page4(props) {
   return (
     <div>
-      <QuestionTitle title="You're a loser." />
+      <QuestionTitle title="Why don't you want to take the quiz??? Sad..." />
       <TransitionComponent
         content="BACK"
-        toNum={0}
+        toNum={FRONT_PAGE}
         onChange={props.onChange}
       />
+    </div>
+  );
+}
+
+function DefaultPage(props) {
+  return (
+    <div>
+      Oops! Looks like you clicked a link that doesn&#39;t go anywhere.<br />
+      Please refresh the page.
     </div>
   );
 }
@@ -161,15 +167,16 @@ function Page4(props) {
 
 function Page(props) {
   switch (props.quizPageNumber) {
-    case 0:
-      return <Page0 onChange={props.onChange} stateFunction={props.stateFunction} />;
-    case 1:
-      return <Page1 onChange={props.onChange} stateFunction={props.stateFunction} />;
-    case 2:
-      return <Page2 onChange={props.onChange} stateFunction={props.stateFunction} />;
-    case 3:
-      const dollarsPerHour = props.state.dollarsPerHour;
+    case FRONT_PAGE:
+      return <StartPage onChange={props.onChange} stateFunction={props.stateFunction} />;
 
+    case Q1_PAGE:
+      return <Page1 onChange={props.onChange} stateFunction={props.stateFunction} />;
+
+    case Q2_PAGE:
+      return <Page2 onChange={props.onChange} stateFunction={props.stateFunction} />;
+
+    case FINAL_PAGE:
       const timeStarted = new Date();
       const newHours = (props.state.timeStartedHour +
         (props.state.timeStartedAmPm === "am" ? 0 : 12)) % 24;
@@ -179,19 +186,16 @@ function Page(props) {
         <FinalPage
           onChange={props.onChange}
           stateFunction={props.stateFunction}
-          dollarsPerHour={dollarsPerHour}
+          dollarsPerHour={props.state.dollarsPerHour}
           timeStarted={timeStarted}
         />
       );
-    case 4:
+
+    case Q4_PAGE:
       return <Page4 onChange={props.onChange} stateFunction={props.stateFunction} />;
+
     default:
-      return (
-        <div>
-          Oops! Looks like you clicked a link that doesn&#39;t go anywhere.
-          Please refresh the page.
-        </div>
-      );
+      return <DefaultPage />;
   }
 }
 
