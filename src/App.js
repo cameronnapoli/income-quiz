@@ -1,3 +1,5 @@
+// Written by: Cameron Napoli
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
@@ -5,6 +7,7 @@ import TimePicker from './resources/TimePicker';
 import QuestionTitle from './resources/QuestionTitle';
 
 import './App.css';
+
 
 const FRONT_PAGE = 0;
 const Q1_PAGE = 1;
@@ -14,7 +17,7 @@ const Q4_PAGE = 4;
 
 
 function TransitionComponent(props) {
-  // Points to the next page
+  // Moves state to the next page
   return (
     <button className="transitionButton" onClick={(e) => props.onChange(props.toNum)}>
       {props.content}
@@ -22,7 +25,7 @@ function TransitionComponent(props) {
   );
 }
 TransitionComponent.propTypes = {
-  onChange: PropTypes.func,
+  onChange: PropTypes.func.isRequired,
   toNum: PropTypes.number,
   content: PropTypes.string
 };
@@ -38,6 +41,7 @@ function StartPage(props) {
     </div>
   );
 }
+
 
 function Page1(props) {
   return (
