@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 
 function QuestionTitle(props) {
   return (
-    <div className="questionTitle">
+    <div className={
+      (props.className !== undefined ?
+          props.className + " " : "") + "questionTitle"}
+    >
       {props.title}
     </div>
   );

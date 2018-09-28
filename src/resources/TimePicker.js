@@ -21,10 +21,22 @@ function TimePicker(props) {
   }
 
   return (
-    <div>
-      <input onChange={(e) => onChangeHour(e)} type="number" min="1" max="12" />
-      <input onChange={(e) => onChangeMinute(e)} type="number" min="0" max="59" />
-      <select onChange={(e) => onChangeAmPm(e)}>
+    <div className="TimePicker">
+      <input className="hour-input" value={props.state.timeStartedHour} onChange={(e) => onChangeHour(e)} type="number" min="1" max="12" />
+      &nbsp;
+      <input
+        className="minute-input"
+        value={(props.state.timeStartedMinute < 10) ? "0" + props.state.timeStartedMinute : props.state.timeStartedMinute}
+        onChange={(e) => onChangeMinute(e)}
+        type="number"
+        min="0"
+        max="59"
+      />
+      &nbsp;
+      <select className="ampm-input"
+        value={props.state.timeStartedAmPm}
+        onChange={(e) => onChangeAmPm(e)}
+      >
         <option value="am">am</option>
         <option value="pm">pm</option>
       </select>
@@ -32,7 +44,7 @@ function TimePicker(props) {
   );
 }
 TimePicker.propTypes = {
-  stateFunction: PropTypes.object.isRequired
+  stateFunction: PropTypes.func.isRequired
 };
 
 export default TimePicker;
