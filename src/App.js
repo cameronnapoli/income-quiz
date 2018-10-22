@@ -238,8 +238,8 @@ class App extends Component {
 
     this.state = {
       quizPageNumber: 0,
-      dollarsPerHour: 0,
-      timeStartedHour: 1,
+      dollarsPerHour: 10,
+      timeStartedHour: 9,
       timeStartedMinute: 0,
       timeStartedAmPm: "am"
     };
