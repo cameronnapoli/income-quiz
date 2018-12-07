@@ -2,6 +2,8 @@
 
 Quiz to tell how much money you have made today. Written using React.
 
+![](app-recording.gif)
+
 ## Usage
 
 **Running quiz:**
